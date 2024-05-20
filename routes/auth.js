@@ -42,11 +42,45 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ id: user.rows[0].id, username: user.rows[0].username }, process.env.JWT_SECRET);
-        res.json({ token, username: user.rows[0].username, user_id: user.rows[0].id});
+        res.json({ token, username: user.rows[0].username, user_id: user.rows[0].id });
     } catch (err) {
         res.status(500).send(err.message);
     }
 });
+
+// Update username route
+router.put('/update-username/:id', async (req, res) => {
+    const userId = req.params.id;
+    const { newUsername } = req.body;
+
+    try {
+        // Check if the user exists
+        const user = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
+
+        if (user.rows.length === 0) {
+            return res.status(404).send('User not found');
+        }
+
+        // Check if new username is provided
+        if (!newUsername) {
+            return res.status(400).send('New username is required');
+        }
+
+        // Update the username
+        await pool.query(
+            "UPDATE users SET username = $1 WHERE id = $2",
+            [newUsername, userId]
+        );
+
+        // Fetch updated user data
+        const updatedUser = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
+
+        res.json(updatedUser.rows[0]);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 
 
 module.exports = router;
