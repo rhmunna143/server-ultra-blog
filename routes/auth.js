@@ -86,4 +86,16 @@ router.put('/update-username/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// Logout route
+router.post('/logout', (req, res) => {
+    // Clear the token cookie
+    res.clearCookie('token');
+    res.sendStatus(200);
+});
+
+// Check if user is logged in route 
+router.get('/check-login', authenticateToken, (req, res) => {
+    res.sendStatus(200);
+});
+
 module.exports = router;
