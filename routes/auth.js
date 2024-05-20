@@ -54,7 +54,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Update username route
-router.put('/update-username/:id', async (req, res) => {
+router.put('/update-username/:id', authenticateToken, async (req, res) => {
     const userId = req.params.id;
     const { newUsername } = req.body;
 
