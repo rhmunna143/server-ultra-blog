@@ -29,6 +29,17 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get all posts by the current user
+router.get('/users-post', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const userPosts = await pool.query("SELECT * FROM posts WHERE user_id = $1", [userId]);
+        res.json(userPosts.rows);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 // Get a single post
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
