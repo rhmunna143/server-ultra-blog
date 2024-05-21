@@ -3,15 +3,14 @@ const pool = require('../db');
 const authenticateToken = require('../middleware/auth');
 
 const router = express.Router();
-
 // Create a new post
 router.post('/', authenticateToken, async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, image_link } = req.body;
 
     try {
         const newPost = await pool.query(
-            "INSERT INTO posts (user_id, title, content) VALUES ($1, $2, $3) RETURNING *",
-            [req.user.id, title, content]
+            "INSERT INTO posts (user_id, title, content, image_link) VALUES ($1, $2, $3, $4) RETURNING *",
+            [req.user.id, title, content, image_link || null]
         );
         res.json(newPost.rows[0]);
     } catch (err) {
@@ -60,7 +59,7 @@ router.get('/:id', async (req, res) => {
 // Update a post
 router.put('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
-    const { title, content } = req.body;
+    const { title, content, image_link } = req.body;
 
     try {
         const post = await pool.query("SELECT * FROM posts WHERE id = $1 AND user_id = $2", [id, req.user.id]);
@@ -70,8 +69,8 @@ router.put('/:id', authenticateToken, async (req, res) => {
         }
 
         const updatedPost = await pool.query(
-            "UPDATE posts SET title = $1, content = $2 WHERE id = $3 RETURNING *",
-            [title, content, id]
+            "UPDATE posts SET title = $1, content = $2, image_link = $3 WHERE id = $4 RETURNING *",
+            [title, content, image_link || post.rows[0].image_link, id]
         );
 
         res.json(updatedPost.rows[0]);

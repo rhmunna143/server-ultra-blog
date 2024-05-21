@@ -11,3 +11,13 @@ CREATE TABLE posts (
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+ALTER TABLE users
+ADD COLUMN full_name VARCHAR(255),
+ADD COLUMN image_link TEXT,
+ADD COLUMN email VARCHAR(255);
+
+ALTER TABLE posts
+ADD COLUMN image_link TEXT;
