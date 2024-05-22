@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:3000', "http://localhost:5000"],
+    origin: ["https://ultrablog.vercel.app", "https://ultrablog-rhmunna143s-projects.vercel.app"],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: 'Authorization,Content-Type'
