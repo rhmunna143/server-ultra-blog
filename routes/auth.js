@@ -41,10 +41,10 @@ router.post('/login', async (req, res) => {
             return res.status(400).send('Invalid password');
         }
 
-        const token = jwt.sign({ id: user.rows[0].id, username: user.rows[0].username }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user.rows[0].id, username: user.rows[0].username }, process.env.JWT_SECRET, { expiresIn: '100y' });
 
         // Set the token in a cookie
-        res.cookie('token', token, { httpOnly: true });
+        res.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 3600000});
 
         res.json({ username: user.rows[0].username, user_id: user.rows[0].id, full_name: user.rows[0].full_name, image_link: user.rows[0].image_link, email: user.rows[0].email });
 
